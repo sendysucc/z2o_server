@@ -1,6 +1,5 @@
 local skynet = require "skynet"
 local snax = require "skynet.snax"
-local loadproto = require "loadproto"
 local sproto = require "sproto"
 local crypt = require "skynet.crypt"
 local utils = require "utils"
