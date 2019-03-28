@@ -1,0 +1,16 @@
+root_server = "$root_server/"
+root_skynet = "$root_server/3rd/skynet/"
+
+lualoader = root_skynet .. 'lualib/loader.lua'
+
+lua_cpath = root_skynet .. 'luaclib/?.so'
+
+cpath = root_skynet .. "cservice/?.so"
+
+lua_path = root_skynet .. 'lualib/?.lua;' .. root_skynet .. 'lualib/?/init.lua;' .. root_server .. 'utils/?.lua;'
+
+server_service = root_server .. 'service/?.lua;'
+
+luaservice = root_skynet .. 'service/?.lua;' .. server_service
+
+snax = root_server .. 'snax/?.lua;'

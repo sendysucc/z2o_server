@@ -1,0 +1,9 @@
+include "conf.path"
+
+thread = 8
+logger = nil
+logpath = '.'
+harbor = 0
+start = 'main'
+
+bootstrap = 'snlua bootstrap'
