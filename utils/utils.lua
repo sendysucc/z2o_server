@@ -3,7 +3,6 @@ local core = require "sproto.core"
 
 local utils = {}
 
-
 utils.loadproto = function(protofile)
     local f = assert(io.open(protofile))
     local data = f:read 'a'
@@ -11,3 +10,4 @@ utils.loadproto = function(protofile)
     return parser.parse(data)
 end
 
+return utils
