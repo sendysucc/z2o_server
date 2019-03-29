@@ -10,8 +10,8 @@ local client = {}
 local REQUEST = {}
 
 function init(...)
-    sp_host = sproto.new( utils.loadproto("./proto/auth_c2s.spro") ):host "package"
-    sp_request = sp_host:attach(sproto.new( utils.loadproto("./proto/auth_s2c.spro") ))
+    sp_host = sproto.new( utils.loadproto("./proto/auth_c2s.sp") ):host "package"
+    sp_request = sp_host:attach(sproto.new( utils.loadproto("./proto/auth_s2c.sp") ))
 end
 
 function response.message(fd,msg,sz)

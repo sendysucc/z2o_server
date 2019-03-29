@@ -3,7 +3,7 @@
     session 1 : integer
 }
 
-#握手
+
 handshake 1 {
     response {
         challenge 0 : string
