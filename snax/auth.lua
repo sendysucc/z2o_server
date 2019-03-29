@@ -6,6 +6,8 @@ local utils = require "utils"
 
 local sp_host
 local sp_request
+local client = {}
+local REQUEST = {}
 
 function init(...)
     sp_host = sproto.new( utils.loadproto("./proto/auth_c2s.spro") ):host "package"
@@ -13,10 +15,44 @@ function init(...)
 end
 
 function response.message(fd,msg,sz)
+    local msgtype, msgname, args, response = sp_host:dispatch(msg,sz)
+    if msgtype == 'REQUEST' then
+        local f = REQUEST[msgname]
+        if f then
+            local resp = f(fd,args)
+            if response then
+                return response(resp)
+            end
+        end
+        return nil
+    else
 
+    end
 end
 
 function response.disconnect(fd)
 
 end
+
+function REQUEST.handshake(fd,args)
+    challenge = crypt.randomkey()
+    client[fd] = {
+        challenge = challenge
+    }
+
+    return { challenge = challenge }
+end
+
+function REQUEST.exkey(fd,args)
+
+end
+
+function REQUEST.exsec(fd, args)
+
+end
+
+function REQUEST.verifycode(fd, args)
+
+end
+
 

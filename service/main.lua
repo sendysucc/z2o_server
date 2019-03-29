@@ -5,5 +5,15 @@ skynet.start(function()
     skynet.error("start main......")
 
     snax.uniqueservice('auth')
+
+    local gate = skynet.uniqueservice("gated")
+
+    local config = {
+        port = 12288,
+        maxclient = 5120,
+        nodelay = true,
+    }
+
+    skynet.send(gate,"lua","open", config )
     
 end)
