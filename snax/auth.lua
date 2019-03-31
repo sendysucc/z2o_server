@@ -44,11 +44,22 @@ function REQUEST.handshake(fd,args)
 end
 
 function REQUEST.exkey(fd,args)
-
+    local c = assert(client[fd])
+    c.clientkey = args.ckey
+    c.serverkey = crypt.randomkey()
+    return {skey = c.serverkey}
 end
 
 function REQUEST.exsec(fd, args)
-
+    local c = assert(client[fd])
+    local chmac = args.cse
+    local tmpsec = crypt.dhsecret(c.clientkey,c.serverkey)
+    local shmac = crypt.hmac64(c.challenge,tmpsec)
+    local errcode = errs.code.SUCCESS
+    if shmac ~= chmac then
+        errcode = errs.code.HANDSHAKEERROR
+    end
+    return { errcode = errcode}
 end
 
 function REQUEST.verifycode(fd, args)

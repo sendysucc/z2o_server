@@ -7,6 +7,7 @@ local socketdriver = require "skynet.socketdriver"
 local connection = {}
 local handler = {}
 local CMD = {}
+local onlinecount = 0
 
 local function sendmsg(fd,msg)
     local c = connection[fd]
@@ -44,12 +45,15 @@ function handler.connect(fd,addr)
     local c = {
         fd = fd,
         addr = string.match(addr,'(%d+%.%d+%.%d+%.%d+):%d+' ),
+        conntime = skynet.now(),
     }
     print('client connect', addr)
     --forward auth service as agent
     c.agent = snax.queryservice('auth')
 
     connection[fd] = c
+
+    onlinecount = onlinecount + 1
     --start receive client socket data
     gateserver.openclient(fd)
 end
@@ -65,6 +69,8 @@ function handler.disconnect(fd)
         local ret = agent.req.disconnect(id)
     end
     connection[fd] = nil
+    
+    onlinecount = onlinecount -1
 end
 
 function handler.error(fd,msg)
