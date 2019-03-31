@@ -27,6 +27,7 @@ end
 function handler.message(fd,msg,sz)
     local c = assert(connection[fd])
     msg = crypt.base64decode(skynet.tostring(msg,sz))
+    
     if c.secret then
         msg = crypt.desdecode(c.secret,msg)
     end
@@ -90,8 +91,13 @@ function handler.command(cmd,source,...)
     end
 end
 
-function CMD.forward()
+function CMD.forward(source,...)
     
+end
+
+function CMD.crypted(source,fd,secret)
+    local c = assert(connection[fd])
+    c.secret = secret
 end
 
 gateserver.start(handler)

@@ -7,7 +7,7 @@ lua_cpath = root_skynet .. 'luaclib/?.so'
 
 cpath = root_skynet .. "cservice/?.so"
 
-lua_path = root_skynet .. 'lualib/?.lua;' .. root_skynet .. 'lualib/?/init.lua;' .. root_server .. 'utils/?.lua;'
+lua_path = root_skynet .. 'lualib/?.lua;' .. root_skynet .. 'lualib/?/init.lua;' .. root_server .. 'utils/?.lua;' .. root_server .. 'libs/?.lua;' .. root_server .. 'data/?.lua;'
 
 server_service = root_server .. 'service/?.lua;'
 

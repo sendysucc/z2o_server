@@ -37,6 +37,7 @@ verifycode 4 {
     }
     response {
         errcode 0 : integer
+        vcode 1 : string
     }
 }
 

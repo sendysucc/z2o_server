@@ -21,6 +21,7 @@ end
 
 local function send_request(name,args)
     session = session + 1
+    print('--->proto: ',name)
     local str = request(name,args,session)
     if secret then
         str = crypt.desencode(secret,str)
@@ -87,4 +88,28 @@ end
 
 send_request('handshake')
 local res = receive_data()
-print(res.challenge)
+local challenge = res.challenge
+print('[handshake] challenge:',challenge)
+
+
+local clientkey = crypt.randomkey()
+send_request('exkey', {ckey = crypt.dhexchange(clientkey)})
+res = receive_data()
+local serverkey = res.skey
+print('[exkey] skey:',serverkey)
+
+
+local tempsecret = crypt.dhsecret(serverkey,clientkey)
+send_request('exsec',{ cse = crypt.hmac64(challenge,tempsecret) })
+res = receive_data()
+local errcode = res.errcode
+print('[exsec] errcode:',errcode)
+
+secret = tempsecret
+
+os.execute('sleep 1')
+
+send_request('verifycode', { cellphone = '18565671320'})
+res = receive_data()
+local verifycode = res.vcode
+print('[verifycode] vcode:',verifycode)

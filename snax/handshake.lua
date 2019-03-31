@@ -8,15 +8,11 @@ local errs = require "errorcode"
 local sp_host
 local sp_request
 local client = {}
-local REQUEST = {}
-
-local function genverifycode()
-    return math.random(0,9) .. math.random(0,9) .. math.random(0,9) .. math.random(0,9)
-end
+local REQEUST = {}
 
 function init(...)
-    sp_host = sproto.new( utils.loadproto("./proto/auth_c2s.sp") ):host "package"
-    sp_request = sp_host:attach(sproto.new( utils.loadproto("./proto/auth_s2c.sp") ))
+    sp_host = sproto.new(utils.loadproto('./proto/handshake_c2s.sp')):host "package"
+    sp_request = sp_host:attach(sproto.new( utils.loadproto("./proto/handshake_s2c.sp")))
 end
 
 function response.message(fd,msg,sz)
@@ -28,16 +24,15 @@ function response.message(fd,msg,sz)
             if response then
                 return response(resp)
             end
-        end
-        return nil
-    else
+        else
+            --todo:close client connection
 
+        end
     end
 end
 
 function response.disconnect(fd)
-    skynet.error('[auth] client disconnect while auth...')
-    client[fd] = nil
+
 end
 
 function REQUEST.handshake(fd,args)
@@ -75,34 +70,5 @@ function REQUEST.exsec(fd, args)
     end)
     
     return { errcode = errcode}
-end
-
-function REQUEST.verifycode(fd, args)
-    local c = assert(client[fd])
-    local phonenum = args.cellphone
-    local errcode = errs.code.SUCCESS
-
-    if not phonenum or #phonenum ~= 11 or string.sub(phonenum,1,1) ~= '1' then
-        errcode = errs.code.INVALID_PHONE_NUMBER
-    end
-
-    --generate verifycode
-    local verifycode = genverifycode()
-
-    --todo: request third part message service 
-
-    --save client's phone number and verifycode
-    c.verifycode = verifycode
-    c.cellphone = phonenum
-
-    return { errcode = errcode, vcode = verifycode }
-end
-
-function REQUEST.register(fd,args)
-
-end
-
-function REQUEST.login(fd,args)
-
 end
 
