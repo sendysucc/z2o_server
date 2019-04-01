@@ -10,8 +10,8 @@ local session = 0
 local secret = nil
 local last = ""
 
-local host = sproto.new( utils.loadproto("./proto/auth_s2c.sp") ):host "package"
-local request = host:attach( sproto.new(utils.loadproto("./proto/auth_c2s.sp") ))
+local host = sproto.new( utils.loadproto("./proto/handshake_s2c.sp") ):host "package"
+local request = host:attach( sproto.new(utils.loadproto("./proto/handshake_c2s.sp") ))
 local fd = assert(socket.connect('127.0.0.1',12288))
 
 local function send_package(fd,pack)
@@ -108,6 +108,9 @@ print('[exsec] errcode:',errcode)
 secret = tempsecret
 
 os.execute('sleep 1')
+
+host = sproto.new( utils.loadproto("./proto/auth_s2c.sp") ):host "package"
+request = host:attach( sproto.new(utils.loadproto("./proto/auth_c2s.sp") ))
 
 send_request('verifycode', { cellphone = '18565671320'})
 res = receive_data()

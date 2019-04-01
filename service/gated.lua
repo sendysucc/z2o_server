@@ -33,9 +33,8 @@ function handler.message(fd,msg,sz)
     end
 
     if c.agent then
-        local agent = snax.bind(c.agent.handle,c.agent.type)
         local id = c.uid or fd
-        local resp = agent.req.message(id,msg,sz)
+        local resp = c.agent.req.message(id,msg,sz)
         if resp then
             sendmsg(fd,resp)
         end
@@ -50,7 +49,7 @@ function handler.connect(fd,addr)
     }
     print('client connect', addr)
     --forward auth service as agent
-    c.agent = snax.queryservice('auth')
+    c.agent = snax.queryservice('handshake')
 
     connection[fd] = c
 
@@ -65,9 +64,8 @@ function handler.disconnect(fd)
         return 
     end
     if c.agent then
-        local agent = snax.bind(c.agent.handle,c.agent.type)
         local id = c.uid or fd
-        local ret = agent.req.disconnect(id)
+        local ret = c.agent.req.disconnect(id)
     end
     connection[fd] = nil
     
@@ -91,8 +89,9 @@ function handler.command(cmd,source,...)
     end
 end
 
-function CMD.forward(source,...)
-    
+function CMD.forward(source,fd,handle,servicetype)
+    local c = assert(connection[fd])
+    c.agent = snax.bind(handle,servicetype)
 end
 
 function CMD.crypted(source,fd,secret)

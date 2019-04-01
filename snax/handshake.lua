@@ -8,11 +8,24 @@ local errs = require "errorcode"
 local sp_host
 local sp_request
 local client = {}
-local REQEUST = {}
+local REQUEST = {}
+local authers = {}
+local auther_count = 6
+local indicator = 0
+
+local function alloc_auth()
+    indicator = indicator + 1
+    indicator = indicator % auther_count 
+    return authers[indicator]
+end
 
 function init(...)
     sp_host = sproto.new(utils.loadproto('./proto/handshake_c2s.sp')):host "package"
     sp_request = sp_host:attach(sproto.new( utils.loadproto("./proto/handshake_s2c.sp")))
+
+    for i = 0, auther_count - 1 do
+        authers[i] = snax.newservice('auth')
+    end
 end
 
 function response.message(fd,msg,sz)
@@ -32,7 +45,8 @@ function response.message(fd,msg,sz)
 end
 
 function response.disconnect(fd)
-
+    skynet.error("[handshake] client disconnect while handshake ....")
+    client[fd] = nil
 end
 
 function REQUEST.handshake(fd,args)
@@ -65,8 +79,14 @@ function REQUEST.exsec(fd, args)
     skynet.timeout(5, function()
         local addr = skynet.queryservice('gated')
         if addr then
+            local authobj = alloc_auth()
+            skynet.send(addr,'lua','forward',fd,authobj.handle,authobj.type)
             skynet.send(addr,'lua','crypted',fd,tmpsec)
+
+            skynet.error(" auth handle :" .. authobj.handle)
+
         end
+        client[fd] = nil
     end)
     
     return { errcode = errcode}

@@ -14,6 +14,19 @@ local function genverifycode()
     return math.random(0,9) .. math.random(0,9) .. math.random(0,9) .. math.random(0,9)
 end
 
+local function checkrepeat(cellphone)
+    local isrepeat = false
+
+    for fd, infos in pairs(client) do
+        if infos.cellphone == cellphone and (skynet.now() - infos.issuetime) < 100 * 180  then
+            isrepeat = true
+            break
+        end
+    end
+
+    return isrepeat
+end
+
 function init(...)
     sp_host = sproto.new( utils.loadproto("./proto/auth_c2s.sp") ):host "package"
     sp_request = sp_host:attach(sproto.new( utils.loadproto("./proto/auth_s2c.sp") ))
@@ -37,72 +50,56 @@ end
 
 function response.disconnect(fd)
     skynet.error('[auth] client disconnect while auth...')
-    client[fd] = nil
-end
-
-function REQUEST.handshake(fd,args)
-    challenge = crypt.randomkey()
-    client[fd] = {
-        challenge = challenge
-    }
-
-    return { challenge = challenge }
-end
-
-function REQUEST.exkey(fd,args)
-    local c = assert(client[fd])
-    c.clientkey = args.ckey
-    c.serverkey = crypt.randomkey()
-    return {skey = crypt.dhexchange(c.serverkey)}
-end
-
-function REQUEST.exsec(fd, args)
-    local c = assert(client[fd])
-    local chmac = args.cse
-    local tmpsec = crypt.dhsecret(c.clientkey,c.serverkey)
-    local shmac = crypt.hmac64(c.challenge,tmpsec)
-    local errcode = errs.code.SUCCESS
-    if shmac ~= chmac then
-        errcode = errs.code.HANDSHAKE_ERROR
-    end
-
-    --send secret to gated
-    skynet.timeout(5, function()
-        local addr = skynet.queryservice('gated')
-        if addr then
-            skynet.send(addr,'lua','crypted',fd,tmpsec)
-        end
-    end)
-    
-    return { errcode = errcode}
+    -- client[fd] = nil
 end
 
 function REQUEST.verifycode(fd, args)
-    local c = assert(client[fd])
+    client[fd] = {}
     local phonenum = args.cellphone
     local errcode = errs.code.SUCCESS
+    local verifycode = 0
 
     if not phonenum or #phonenum ~= 11 or string.sub(phonenum,1,1) ~= '1' then
         errcode = errs.code.INVALID_PHONE_NUMBER
     end
 
-    --generate verifycode
-    local verifycode = genverifycode()
+    --check repeat operation
+    if checkrepeat(phonenum) then
+        errcode = errs.code.OPERATOR_TOO_FAST
+    else
+        --generate verifycode
+        verifycode = genverifycode()
 
-    --todo: request third part message service 
+        --todo: request third part message service to send verifycode
 
-    --save client's phone number and verifycode
-    c.verifycode = verifycode
-    c.cellphone = phonenum
+        --save client's phone number and verifycode
+        client[fd].verifycode = verifycode
+        client[fd].cellphone = phonenum
+        client[fd].issuetime = skynet.now()
+        skynet.error(' verifycode :' .. verifycode)
+    end
 
-    return { errcode = errcode, vcode = verifycode }
+    return { errcode = errcode }
 end
 
 function REQUEST.register(fd,args)
+    local c = assert(client[fd])
+    local errcode = errs.code.SUCCESS
+
+    if not c.verifycode then
+        errcode = errs.code.NO_VERIFYCODE_ISSUES
+    end
+
+    if args.verifycode ～= c.verifycode then
+        errcode = errs.code.INVALID_VERIFYCODE
+    end
+
+
 
 end
 
 function REQUEST.login(fd,args)
+    local c = client[fd] or {}
 
 end
 
