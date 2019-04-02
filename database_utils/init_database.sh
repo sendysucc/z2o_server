@@ -11,4 +11,4 @@ python $WEBENDPATH/manage.py makemigrations manager
 python $WEBENDPATH/manage.py migrate
 
 
-mysql -usendy -psendy -Dz2oserver < ./03_proc_register.sql
+#mysql -usendy -psendy -Dz2oserver < ./03_proc_register.sql
