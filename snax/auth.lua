@@ -94,7 +94,7 @@ function REQUEST.register(fd,args)
         errcode = errs.code.INVALID_VERIFYCODE
     end
 
-
+    
 
 end
 
