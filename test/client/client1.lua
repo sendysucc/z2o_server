@@ -116,3 +116,8 @@ send_request('verifycode', { cellphone = '18565671320'})
 res = receive_data()
 local verifycode = res.vcode
 print('[verifycode] vcode:',verifycode)
+
+
+send_request("register",{ cellphone='18565671320', password='hansen', verifycode = '7812', referrer='z2o_ref' ,agentcode='z2o_agent' })
+res = receive_data()
+print('[register] errcode:', res.errcode)

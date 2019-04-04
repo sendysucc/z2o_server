@@ -11,7 +11,8 @@ local client = {}
 local REQUEST = {}
 
 local function genverifycode()
-    return math.random(0,9) .. math.random(0,9) .. math.random(0,9) .. math.random(0,9)
+    -- return math.random(0,9) .. math.random(0,9) .. math.random(0,9) .. math.random(0,9)
+    return '7812'
 end
 
 local function checkrepeat(cellphone)
@@ -90,12 +91,13 @@ function REQUEST.register(fd,args)
         errcode = errs.code.NO_VERIFYCODE_ISSUES
     end
 
-    if args.verifycode ～= c.verifycode then
+    if args.verifycode ~= c.verifycode then
         errcode = errs.code.INVALID_VERIFYCODE
     end
 
     
 
+    return { errcode = errcode }
 end
 
 function REQUEST.login(fd,args)

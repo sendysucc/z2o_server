@@ -20,8 +20,8 @@ register 5 {
         cellphone 0 : string
         password 1 : string
         verifycode 2 : string
-        promotecode 3 : string
-        agentcode 4 : string
+        referrer 3 : string     #推荐人
+        agentcode 4 : string    #代理编码
     }
     response {
         errcode 0 : integer
