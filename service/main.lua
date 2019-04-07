@@ -4,6 +4,8 @@ snax = require "skynet.snax"
 skynet.start(function()
     skynet.error("start main......")
 
+    snax.uniqueservice('db')
+
     snax.uniqueservice('handshake')
 
     local gate = skynet.uniqueservice("gated")

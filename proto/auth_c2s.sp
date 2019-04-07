@@ -44,7 +44,8 @@ login 6 {
         password 6 : string
         gold   7 : integer
         diamond 8 : integer
-        gamingservice 9 : string
-        gaminghandle 10 : integer
+        promotecode 9 : string
+        gamingservice 10 : string
+        gaminghandle 11 : integer
     }
 }

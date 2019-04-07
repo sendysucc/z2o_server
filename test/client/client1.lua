@@ -118,6 +118,14 @@ local verifycode = res.vcode
 print('[verifycode] vcode:',verifycode)
 
 
-send_request("register",{ cellphone='18565671320', password='hansen', verifycode = '7812', referrer='z2o_ref' ,agentcode='z2o_agent' })
+send_request("register",{ cellphone='18565671320', password='hansen', verifycode = '7812', referrer='' ,agentcode='' })
 res = receive_data()
 print('[register] errcode:', res.errcode)
+
+
+send_request("login", { cellphone = '18565671320', password = 'hansen' })
+res = receive_data()
+print('[login] :')
+for k,v in pairs(res) do
+    print(k,v)
+end

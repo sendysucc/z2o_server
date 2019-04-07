@@ -10,6 +10,10 @@ set.code = {
     INVALID_VERIFYCODE = 6,
     DB_EXECUTE_ERROR = 7,
     PHONE_NUMBER_ALREADY_EXISTS = 8,
+    INVALID_PHONE_NUMBER = 9,
+    INVALID_PASSWORD_LENGTH = 10,
+    ACCOUNT_NOT_EXISTS = 11,
+    PASSWORD_INCORRECT = 12,
 }
 
 set.reason = {
@@ -22,6 +26,10 @@ set.reason = {
     [set.code.INVALID_VERIFYCODE] = '验证码无效',
     [set.code.DB_EXECUTE_ERROR] = '数据库执行错误',
     [set.code.PHONE_NUMBER_ALREADY_EXISTS] = '手机号已经注册',
+    [set.code.INVALID_PHONE_NUMBER] = '无效的手机号码',
+    [set.code.INVALID_PASSWORD_LENGTH] = '密码长度至少需要6位',
+    [set.code.ACCOUNT_NOT_EXISTS] = '账户不存在',
+    [set.code.PASSWORD_INCORRECT] = '密码错误',
 }
 
 

@@ -3,12 +3,18 @@ local snax = require "skynet.snax"
 local sproto = require "sproto"
 local crypt = require "skynet.crypt"
 local utils = require "utils"
+local playermanager = require "playermanager"
 local errs = require "errorcode"
 
 local sp_host
 local sp_request
 local client = {}
 local REQUEST = {}
+
+local function sha1(text)
+    local c = crypt.sha1(text)
+    return crypt.hexencode(c)
+end
 
 local function genverifycode()
     -- return math.random(0,9) .. math.random(0,9) .. math.random(0,9) .. math.random(0,9)
@@ -95,13 +101,52 @@ function REQUEST.register(fd,args)
         errcode = errs.code.INVALID_VERIFYCODE
     end
 
-    
+    local cellphone = args.cellphone
+    local password = args.password
+    local referrer = args.referrer
+    local agentcode = args.agentcode
 
-    return { errcode = errcode }
+    if not cellphone or #cellphone ~= 11 or string.sub(cellphone,1,1) ~= '1' or tonumber(cellphone) == nil then
+        errcode = errs.code.INVALID_PHONE_NUMBER
+    end
+
+    if not password or #password < 6 then
+        errcode = errs.code.INVALID_PASSWORD_LENGTH
+    end
+
+    if errcode ~= errs.code.SUCCESS then
+        return { errcode = errcode }
+    end
+    
+    args.password = sha1(args.password)
+    local rets = playermanager.register(args)
+    
+    return { errcode = rets.errcode }
 end
 
 function REQUEST.login(fd,args)
     local c = client[fd] or {}
+    local cellphone = args.cellphone
+    local password = args.password
+    
+    local errcode = errs.code.SUCCESS
 
+    if not cellphone or #cellphone ~= 11 or string.sub(cellphone,1,1) ~= '1' or tonumber(cellphone) == nil then
+        errcode = errs.code.INVALID_PHONE_NUMBER
+    end
+    if not password or #password < 6 then
+        errcode = errs.code.INVALID_PASSWORD_LENGTH
+    end
+
+    args.password = sha1(args.password)
+
+    local rets = playermanager.login(args)
+    
+    print('------------->[login]-----------')
+    for k,v in pairs(rets) do
+        print(k,v)
+    end 
+
+    return rets
 end
 

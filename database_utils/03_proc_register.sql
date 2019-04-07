@@ -10,11 +10,16 @@ lb_reg:begin
     declare errcode int;
     declare newuserid int;
     declare start_userid int;
-    declare avatorid = int;
+    declare avatorid int;
     declare nickname varchar(30);
+    declare gender int;
+    declare gold int;
+    declare diamond int;
+    declare agentid int;
     
-    set start_userid = 300000;
-
+    
+    set start_userid = 300100;
+    set agentid = 0;
     
     if exists(select userid from User where User.cellphone = cellphone) then
         set errcode = 8;
@@ -23,20 +28,37 @@ lb_reg:begin
     end if;
 
     if not exists( select  agentid from Agency where Agency.acode = agentcode ) then
-        set agentcode = 'z2o_agent';
+        set agentcode = 'agent_system';
     end if;
+
+    select Agency.agentid into agentid from Agency where Agency.acode = agentcode;
 
     if not exists( select userid from User where User.referrer =  referrer ) then
-        set referrer = 'z2o_ref';
+        set referrer = 'ref_system';
     end if;
 
-    select max(userid) into newuserid from User where User.isrobot = 0;
+    select max(User.userid) into newuserid from User where User.isrobot = 0;
     if ifnull(newuserid,start_userid) <=> start_userid then
         set newuserid = start_userid;
     end if;
     set newuserid = start_userid + 1;
 
+    select concat('玩家', newuserid) into nickname;
 
+    set avatorid = floor(rand() *100) % 10;
+    if avatorid <=> 0 then
+        set avatorid = 1;
+    end if;
 
+    set gender = floor(rand()*100) %2;
+    set gold = 0;
+    set diamond = 0;
+
+    insert into User(userid,username,nickname,avatoridx,gender,cellphone,password,gold,diamond,createtime,agentid,promotecode,referrer,accountenable,isrobot) value(
+        newuserid,cellphone, nickname,avatorid,gender,cellphone,passwd,gold,diamond,now(),agentid,' ', referrer, 1,0);
+
+    set errcode = 0;
+
+    select errcode as 'errcode';
 end
 ;;
