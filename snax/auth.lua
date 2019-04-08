@@ -11,11 +11,6 @@ local sp_request
 local client = {}
 local REQUEST = {}
 
-local function sha1(text)
-    local c = crypt.sha1(text)
-    return crypt.hexencode(c)
-end
-
 local function genverifycode()
     -- return math.random(0,9) .. math.random(0,9) .. math.random(0,9) .. math.random(0,9)
     return '7812'
@@ -118,14 +113,13 @@ function REQUEST.register(fd,args)
         return { errcode = errcode }
     end
     
-    args.password = sha1(args.password)
+    args.password = utils.sha1(args.password)
     local rets = playermanager.register(args)
     
     return { errcode = rets.errcode }
 end
 
 function REQUEST.login(fd,args)
-    local c = client[fd] or {}
     local cellphone = args.cellphone
     local password = args.password
     
@@ -138,14 +132,20 @@ function REQUEST.login(fd,args)
         errcode = errs.code.INVALID_PASSWORD_LENGTH
     end
 
-    args.password = sha1(args.password)
+    args.password = utils.sha1(args.password)
 
     local rets = playermanager.login(args)
-    
-    print('------------->[login]-----------')
-    for k,v in pairs(rets) do
-        print(k,v)
-    end 
+
+    if rets.accountenable and tonumber(rets.accountenable) == 1 then
+        rets.accountenable = true
+    elseif rets.accountenable and tonumber(rets.accountenable) == 0 then
+        rets.accountenable = false
+    end
+
+    if rets.errcode == errs.code.SUCCESS then
+        --forward to hall service
+        
+    end
 
     return rets
 end

@@ -10,5 +10,9 @@ utils.loadproto = function(protofile)
     return parser.parse(data)
 end
 
+utils.sha1 = function(text)
+    local c = crypt.sha1(text)
+    return crypt.hexencode(c)
+end
 
 return utils

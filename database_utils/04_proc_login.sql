@@ -60,7 +60,7 @@ lb_login:begin
 
      select errcode as 'errcode', _userid as 'userid', _username as 'username', _nickname as 'nickname', _avatoridx as 'avatorid', _gender as 'gender',
         _cellphone as 'cellphone', _password as 'password', _gold as 'gold', _diamond as 'diamond', _promotecode as 'promotecode',
-        _referrer as 'referrer', _accountenable as 'accountenable', _isrobot as 'isrobot', _agentcode as 'agentcode';
+        _referrer as 'referrer', _accountenable as 'accountenable', _isrobot as 'isrobot', _agentcode as 'agentcode', _agentid as 'agentid';
 
 end
 

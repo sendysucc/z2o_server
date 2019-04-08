@@ -14,6 +14,7 @@ set.code = {
     INVALID_PASSWORD_LENGTH = 10,
     ACCOUNT_NOT_EXISTS = 11,
     PASSWORD_INCORRECT = 12,
+    ALREADY_LOGIN = 13,
 }
 
 set.reason = {
@@ -30,6 +31,7 @@ set.reason = {
     [set.code.INVALID_PASSWORD_LENGTH] = '密码长度至少需要6位',
     [set.code.ACCOUNT_NOT_EXISTS] = '账户不存在',
     [set.code.PASSWORD_INCORRECT] = '密码错误',
+    [set.code.ALREADY_LOGIN] = '账号已经登陆',
 }
 
 

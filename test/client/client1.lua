@@ -4,11 +4,20 @@ package.path = './3rd/skynet/lualib/?.lua;' .. './utils/?.lua;'
 local socket = require "client.socket"
 local sproto = require "sproto"
 local crypt = require "client.crypt"
-local utils = require "utils"
+local parser = require "sprotoparser"
+-- local utils = require "utils"
 
 local session = 0
 local secret = nil
 local last = ""
+
+local utils = {}
+utils.loadproto = function(protofile)
+    local f = assert(io.open(protofile))
+    local data = f:read 'a'
+    f:close()
+    return parser.parse(data)
+end
 
 local host = sproto.new( utils.loadproto("./proto/handshake_s2c.sp") ):host "package"
 local request = host:attach( sproto.new(utils.loadproto("./proto/handshake_c2s.sp") ))
