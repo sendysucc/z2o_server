@@ -20,4 +20,5 @@ skynet.start(function()
 
     skynet.send(gate,"lua","open", config )
     
+    skynet.exit()
 end)

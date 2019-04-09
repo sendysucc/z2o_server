@@ -15,6 +15,8 @@ set.code = {
     ACCOUNT_NOT_EXISTS = 11,
     PASSWORD_INCORRECT = 12,
     ALREADY_LOGIN = 13,
+    PLATFOMR_MAINTENANCE = 14,
+    GAME_MAINTENANCE = 15,
 }
 
 set.reason = {
@@ -32,6 +34,8 @@ set.reason = {
     [set.code.ACCOUNT_NOT_EXISTS] = '账户不存在',
     [set.code.PASSWORD_INCORRECT] = '密码错误',
     [set.code.ALREADY_LOGIN] = '账号已经登陆',
+    [set.code.PLATFOMR_MAINTENANCE] = '平台正在维护中,请稍后再来!',
+    [set.code.GAME_MAINTENANCE] = '游戏正在维护中...'
 }
 
 

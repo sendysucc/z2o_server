@@ -4,7 +4,7 @@
 }
 
 #获取验证码
-verifycode 4 {
+verifycode 1 {
     request {
         cellphone 0 : string
     }
@@ -15,7 +15,7 @@ verifycode 4 {
 }
 
 #注册
-register 5 {
+register 2 {
     request {
         cellphone 0 : string
         password 1 : string
@@ -29,7 +29,7 @@ register 5 {
 }
 
 #登录
-login 6 {
+login 3 {
     request {
         cellphone 0 : string
         password 1 : string

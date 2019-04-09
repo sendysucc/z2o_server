@@ -20,7 +20,7 @@ local function checkrepeat(cellphone)
     local isrepeat = false
 
     for fd, infos in pairs(client) do
-        if infos.cellphone == cellphone and (skynet.now() - infos.issuetime) < 100 * 180  then
+        if infos.cellphone == cellphone and (skynet.now() - (infos.issuetime or skynet.now()) ) < 100 * 180  then
             isrepeat = true
             break
         end
@@ -120,10 +120,8 @@ function REQUEST.register(fd,args)
 end
 
 function REQUEST.login(fd,args)
-
     local cellphone = args.cellphone
     local password = args.password
-    
     local errcode = errs.code.SUCCESS
 
     if not cellphone or #cellphone ~= 11 or string.sub(cellphone,1,1) ~= '1' or tonumber(cellphone) == nil then
@@ -143,15 +141,14 @@ function REQUEST.login(fd,args)
         rets.accountenable = false
     end
 
-    print('-[auth]---->rets.errcode:', rets.errcode)
-
     if tonumber(rets.errcode) == errs.code.SUCCESS then
         --forward to hall service
         local addr = skynet.queryservice("gated")
         local hall = snax.queryservice('hall')
-        print('------->addr:',tostring(addr or 'nil'))
         skynet.send(addr,'lua','forward', fd, hall.handle,hall.type, rets.userid)
     end
+
+    client[fd] = nil
 
     return rets
 end

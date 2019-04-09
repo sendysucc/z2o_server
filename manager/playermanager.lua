@@ -66,6 +66,8 @@ playermgr.login = function(params)
     return res
 end
 
-
+playermgr.offline = function(userid)
+    getredis().post.updateValue("Player:" .. userid, {online = 0})
+end
 
 return playermgr

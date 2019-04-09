@@ -6,6 +6,7 @@ local sproto = require "sproto"
 local crypt = require "client.crypt"
 local parser = require "sprotoparser"
 -- local utils = require "utils"
+local cjson = require "cjson"
 
 local session = 0
 local secret = nil
@@ -18,6 +19,16 @@ utils.loadproto = function(protofile)
     f:close()
     return parser.parse(data)
 end
+
+
+print('=-------------------cjson')
+
+ta = {}
+ta.name ='hansen'
+ta.age = 28
+
+print(cjson.encode(ta))
+
 
 local host = sproto.new( utils.loadproto("./proto/handshake_s2c.sp") ):host "package"
 local request = host:attach( sproto.new(utils.loadproto("./proto/handshake_c2s.sp") ))
@@ -140,3 +151,26 @@ for k,v in pairs(res) do
 end
 
 os.execute('sleep 3')
+
+host = sproto.new( utils.loadproto("./proto/hall_s2c.sp") ):host "package"
+request = host:attach( sproto.new(utils.loadproto("./proto/hall_c2s.sp") ))
+
+send_request('gamelist')
+res = receive_data()
+print('[gamelist]:')
+for k,v in pairs(res.games) do
+    if type(v) == 'table' then
+        for _k, _v in pairs(v) do
+            print(_k,_v)
+        end
+
+    end
+end
+
+send_request('roomlist',{gameid=200})
+res = receive_data()
+print('[roomlist]:')
+for k,v in pairs(res) do
+    print(k,v)
+end
+
