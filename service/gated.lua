@@ -97,15 +97,17 @@ function CMD.forward(source,fd,handle,servicetype,userid)
     else
         c = connection[fd]
     end
-    print('-------->forward:',fd,userid)
-    c.agent = snax.bind(handle,servicetype)
-    c.uid = userid
+    if fd < 0 and userid then
+        c.uid = nil
+    else
+        c.uid = userid
+    end
 
+    c.agent = snax.bind(handle,servicetype)
     
-    if userid and fd > 0 then
+    if userid then
         uid_fd[userid] = fd
     end
-    
 end
 
 function CMD.crypted(source,fd,secret)
