@@ -13,12 +13,12 @@ function init(...)
     sp_request = sp_host:attach(sproto.new( utils.loadproto("./proto/hall_s2c.sp") ))
 end
 
-function response.message(fd,msg,sz)
+function response.message(id,msg,sz)
     local msgtype, msgname, args, response = sp_host:dispatch(msg,sz)
     if msgtype == 'REQUEST' then
         local f = REQUEST[msgname]
         if f then
-            local resp = f(fd,args)
+            local resp = f(id,args)
             if response then
                 return response(resp)
             end
@@ -29,7 +29,7 @@ function response.message(fd,msg,sz)
     end
 end
 
-function response.disconnect(fd)
-    skynet.error('[hall] client disconnected ...')
+function response.disconnect(id)
+    skynet.error('[hall] client disconnected ... id:', id)
     
 end

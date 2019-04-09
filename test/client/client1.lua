@@ -138,3 +138,5 @@ print('[login] :')
 for k,v in pairs(res) do
     print(k,v)
 end
+
+os.execute('sleep 3')

@@ -1,5 +1,6 @@
 local parser = require "sprotoparser"
 local core = require "sproto.core"
+local crypt = require "skynet.crypt"
 
 local utils = {}
 

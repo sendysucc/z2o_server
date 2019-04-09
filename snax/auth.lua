@@ -51,7 +51,7 @@ function response.message(fd,msg,sz)
 end
 
 function response.disconnect(fd)
-    skynet.error('[auth] client disconnect while auth...')
+    skynet.error('[auth] client disconnect while auth...fd:' .. fd)
     -- client[fd] = nil
 end
 
@@ -120,6 +120,7 @@ function REQUEST.register(fd,args)
 end
 
 function REQUEST.login(fd,args)
+
     local cellphone = args.cellphone
     local password = args.password
     
@@ -142,9 +143,14 @@ function REQUEST.login(fd,args)
         rets.accountenable = false
     end
 
-    if rets.errcode == errs.code.SUCCESS then
+    print('-[auth]---->rets.errcode:', rets.errcode)
+
+    if tonumber(rets.errcode) == errs.code.SUCCESS then
         --forward to hall service
-        
+        local addr = skynet.queryservice("gated")
+        local hall = snax.queryservice('hall')
+        print('------->addr:',tostring(addr or 'nil'))
+        skynet.send(addr,'lua','forward', fd, hall.handle,hall.type, rets.userid)
     end
 
     return rets

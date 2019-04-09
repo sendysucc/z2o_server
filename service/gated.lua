@@ -89,9 +89,14 @@ function handler.command(cmd,source,...)
     end
 end
 
-function CMD.forward(source,fd,handle,servicetype)
+function CMD.forward(source,fd,handle,servicetype,userid)
+
+    print('------->[gated] forward', handle,servicetype,userid)
     local c = assert(connection[fd])
     c.agent = snax.bind(handle,servicetype)
+    if userid then
+        c.uid = userid
+    end
 end
 
 function CMD.crypted(source,fd,secret)

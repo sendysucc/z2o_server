@@ -8,6 +8,7 @@ skynet.start(function()
     snax.uniqueservice('db')
 
     snax.uniqueservice('handshake')
+    snax.uniqueservice('hall')
 
     local gate = skynet.uniqueservice("gated")
 

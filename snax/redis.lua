@@ -75,3 +75,7 @@ end
 function accept.replaceRecord(key,record)
 
 end
+
+function accept.removeRecord(key)
+    db:del(key)
+end
