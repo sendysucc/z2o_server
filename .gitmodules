@@ -4,3 +4,6 @@
 [submodule "3rd/lua-cjson"]
 	path = 3rd/lua-cjson
 	url = https://github.com/sendysucc/lua-cjson.git
+[submodule "lua-cjson"]
+	path = lua-cjson
+	url = https://github.com/sendysucc/lua-cjson.git
