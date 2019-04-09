@@ -79,11 +79,12 @@ end
 --注销登陆
 function REQUEST.logout(uid,args)
     playermanager.offline(uid)
-
+    
     --forward to auth service
     local addr = skynet.queryservice('gated')
-    local auth = snax.queryservice('auth')
-    skynet.send(addr,'lua','forward',auth.handle,auth.type)
+    local auth_handle,auth_type = snax.queryservice('handshake').req.getauth()
+    print('----------->logout :',uid,'gated addr:',addr)
+    skynet.send(addr,'lua','forward',-1,auth_handle,auth_type,uid)
 
     return { errcode = errs.code.SUCCESS }
 end

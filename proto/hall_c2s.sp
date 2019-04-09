@@ -72,6 +72,6 @@ charge 5 {
 #注销登陆
 logout 6 {
     response {
-
+        errcode 0 : integer
     }
 }

@@ -3,6 +3,7 @@ local snax = require "skynet.snax"
 local utils = require "utils"
 local gamedata = require "gamedata"
 local roomdata = require "roomdata"
+local json = require "cjson"
 
 local gamemgr = {}
 
@@ -25,6 +26,7 @@ gamemgr.roomlist = function(gameid)
     local rlist = {}
     for id, room in pairs(roomdata) do
         if room.gameid == gameid then
+            room.limitBet = json.encode(room.limitBet)
             table.insert(rlist,room)
         end
     end

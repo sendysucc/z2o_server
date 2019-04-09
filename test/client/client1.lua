@@ -22,11 +22,9 @@ end
 
 
 print('=-------------------cjson')
-
 ta = {}
 ta.name ='hansen'
 ta.age = 28
-
 print(cjson.encode(ta))
 
 
@@ -170,7 +168,31 @@ end
 send_request('roomlist',{gameid=200})
 res = receive_data()
 print('[roomlist]:')
+for k,v in pairs(res.rooms) do
+    if type(v) == 'table' then
+        for _k,_v in pairs(v) do
+            print(_k,_v)
+        end
+    end
+end
+
+
+os.execute('sleep 2')
+
+send_request('logout')
+res = receive_data()
+print('[logout]: errcode:',res.errcode)
+
+os.execute('sleep 1')
+
+
+
+host = sproto.new( utils.loadproto("./proto/auth_s2c.sp") ):host "package"
+request = host:attach( sproto.new(utils.loadproto("./proto/auth_c2s.sp") ))
+
+send_request("login", { cellphone = '18565671320', password = 'hansen' })
+res = receive_data()
+print('[login] :')
 for k,v in pairs(res) do
     print(k,v)
 end
-

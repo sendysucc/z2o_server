@@ -49,6 +49,11 @@ function response.disconnect(fd)
     client[fd] = nil
 end
 
+function response.getauth()
+    local auth = alloc_auth()
+    return auth.handle,auth.type
+end
+
 function REQUEST.handshake(fd,args)
     challenge = crypt.randomkey()
     client[fd] = {

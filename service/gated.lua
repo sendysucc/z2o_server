@@ -8,6 +8,7 @@ local connection = {}
 local handler = {}
 local CMD = {}
 local onlinecount = 0
+local uid_fd = {}
 
 local function sendmsg(fd,msg)
     local c = connection[fd]
@@ -90,9 +91,21 @@ function handler.command(cmd,source,...)
 end
 
 function CMD.forward(source,fd,handle,servicetype,userid)
-    local c = assert(connection[fd])
+    local c 
+    if fd < 0 then
+        c = connection[uid_fd[userid]]
+    else
+        c = connection[fd]
+    end
+    print('-------->forward:',fd,userid)
     c.agent = snax.bind(handle,servicetype)
     c.uid = userid
+
+    
+    if userid and fd > 0 then
+        uid_fd[userid] = fd
+    end
+    
 end
 
 function CMD.crypted(source,fd,secret)
