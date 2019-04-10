@@ -176,7 +176,6 @@ for k,v in pairs(res.rooms) do
     end
 end
 
-
 os.execute('sleep 2')
 
 send_request('logout')
@@ -185,14 +184,34 @@ print('[logout]: errcode:',res.errcode)
 
 os.execute('sleep 1')
 
-
-
 host = sproto.new( utils.loadproto("./proto/auth_s2c.sp") ):host "package"
 request = host:attach( sproto.new(utils.loadproto("./proto/auth_c2s.sp") ))
 
-send_request("login", { cellphone = '18565671320', password = 'hansen' })
+--register again
+send_request('verifycode', { cellphone = '18565671320'})
+res = receive_data()
+local verifycode = res.vcode
+print('[verifycode] vcode:',verifycode)
+
+os.execute("sleep 1")
+
+send_request("register", { cellphone='18565672920', password='hansen', verifycode = '7812', referrer='' ,agentcode=''  })
+res = receive_data()
+print('[register] errcode:', res.errcode)
+
+os.execute("sleep 2")
+
+send_request("login", { cellphone = '18565672920', password = 'hansen' })
 res = receive_data()
 print('[login] :')
 for k,v in pairs(res) do
     print(k,v)
 end
+
+
+host = sproto.new( utils.loadproto("./proto/hall_s2c.sp") ):host "package"
+request = host:attach( sproto.new(utils.loadproto("./proto/hall_c2s.sp") ))
+
+send_request("loadrobot")
+res = receive_data()
+print('[loadrobot] errcode:', res.errcode)

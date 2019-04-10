@@ -33,5 +33,4 @@ gamemgr.roomlist = function(gameid)
     return rlist
 end
 
-
 return gamemgr

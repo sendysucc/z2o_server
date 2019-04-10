@@ -16,4 +16,13 @@ utils.sha1 = function(text)
     return crypt.hexencode(c)
 end
 
+utils.tlength = function(dest)
+    assert (type(dest) == 'table')
+    local length = 0
+    for k,v in pairs(dest) do
+        length = length + 1
+    end
+    return length
+end
+
 return utils

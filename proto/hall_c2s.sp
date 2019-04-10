@@ -75,3 +75,22 @@ logout 6 {
         errcode 0 : integer
     }
 }
+
+#加入游戏
+joinroom 7 {
+    request {
+        gameid 0 : integer
+        roomid 1 : integer
+    }
+    response {
+        errcode 0 : integer
+        
+    }
+}
+
+#test
+loadrobot 8 {
+    response {
+        errcode 0 : integer
+    }
+}

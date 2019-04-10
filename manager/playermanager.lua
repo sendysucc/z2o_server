@@ -2,6 +2,7 @@ local skynet = require "skynet"
 local mysql = require "skynet.db.mysql"
 local errs = require "errorcode"
 local snax = require "skynet.snax"
+local utils = require "utils"
 
 local playermgr = {}
 local db = nil
@@ -25,6 +26,7 @@ local function getredis()
     return rediscache
 end
 
+--注册
 playermgr.register = function(params)
     local cellphone = escape(params.cellphone)
     local password = escape(params.password or '')
@@ -32,13 +34,16 @@ playermgr.register = function(params)
     local agentcode = escape(params.agentcode or '')
 
     local sql_str = string.format("call proc_register(%s,%s,%s,%s)",cellphone,password,referrer,agentcode)
-    local errcode,res = getdb().req.dosomething(sql_str)
+    print('---------->register:' , sql_str)
+    local errcode,res = getdb().req.docall(sql_str)
+    
     if errcode ~= errs.code.SUCCESS then
-        reutrn { errcode = errcode }
+        return { errcode = errcode }
     end
     return { errcode = res.errcode }
 end
 
+--登陆
 playermgr.login = function(params)
     local cellphone = escape(params.cellphone)
     local password = escape(params.password)
@@ -56,7 +61,7 @@ playermgr.login = function(params)
         getredis().post.updateValue("Player:" .. userid, {online = 1})
     else
         local sql_str = string.format("call proc_login(%s,%s)",cellphone,password)
-        errcode ,res = getdb().req.dosomething(sql_str)
+        errcode ,res = getdb().req.docall(sql_str)
         if errcode ~= errs.code.SUCCESS then
             return {errcode = errcode}
         end
@@ -66,8 +71,29 @@ playermgr.login = function(params)
     return res
 end
 
+--下线
 playermgr.offline = function(userid)
     getredis().post.updateValue("Player:" .. userid, {online = 0})
+end
+
+--加载机器人到redis
+playermgr.loadrobot2redis = function()
+    local sql_str = string.format('select * from User where User.isrobot = 1;')
+    local errcode, res = getdb().req.doquery(sql_str)
+
+    for _,robot in pairs(res) do
+        local robotid = robot.userid
+        local alreadyExists = getredis().req.getRecordByKey("Player:" .. robotid)
+        if utils.tlength(alreadyExists) == 0 then
+            getredis().post.addNewRecord("Player:" .. robotid, robot)
+        end
+    end
+
+end
+
+--获取 count 个空闲机器人
+playermgr.getidelrobot = function(count)
+
 end
 
 return playermgr

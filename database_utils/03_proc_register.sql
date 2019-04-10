@@ -41,15 +41,12 @@ lb_reg:begin
     if ifnull(newuserid,start_userid) <=> start_userid then
         set newuserid = start_userid;
     end if;
-    set newuserid = start_userid + 1;
+    set newuserid = newuserid + 1;
 
     select concat('玩家', newuserid) into nickname;
 
-    set avatorid = floor(rand() *100) % 10;
-    if avatorid <=> 0 then
-        set avatorid = 1;
-    end if;
-
+    set avatorid = floor(rand() *100) % 6 +1;
+    
     set gender = floor(rand()*100) %2;
     set gold = 0;
     set diamond = 0;

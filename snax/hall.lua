@@ -89,3 +89,13 @@ function REQUEST.logout(uid,args)
     return { errcode = errs.code.SUCCESS }
 end
 
+--加入游戏
+function REQUEST.joinroom(uid,args)
+
+end
+
+--test
+function REQUEST.loadrobot()
+    playermanager.loadrobot2redis()
+    return { errcode = errs.code.SUCCESS }
+end

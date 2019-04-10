@@ -29,9 +29,10 @@ function init(...)
         skynet.error('[db] connect database failed !')
         snax.exit()
     end
+
 end
 
-function response.dosomething(sql_str)
+function response.docall(sql_str)
     local ret = db:query(sql_str)
 
     if ret.badresult then
@@ -39,5 +40,16 @@ function response.dosomething(sql_str)
         return errs.code.DB_EXECUTE_ERROR
     else
         return errs.code.SUCCESS,ret[1][1]
+    end
+end
+
+function response.doquery(sql_str)
+    local ret = db:query(sql_str)
+
+    if ret.badresult then
+        dberror(ret.errno,ret.sqlstate)
+        return errs.code.DB_EXECUTE_ERROR
+    else
+        return errs.code.SUCCESS,ret
     end
 end
