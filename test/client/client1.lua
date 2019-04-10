@@ -208,10 +208,10 @@ for k,v in pairs(res) do
     print(k,v)
 end
 
-
 host = sproto.new( utils.loadproto("./proto/hall_s2c.sp") ):host "package"
 request = host:attach( sproto.new(utils.loadproto("./proto/hall_c2s.sp") ))
 
 send_request("loadrobot")
 res = receive_data()
 print('[loadrobot] errcode:', res.errcode)
+
