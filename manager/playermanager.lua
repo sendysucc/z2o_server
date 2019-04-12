@@ -34,7 +34,6 @@ playermgr.register = function(params)
     local agentcode = escape(params.agentcode or '')
 
     local sql_str = string.format("call proc_register(%s,%s,%s,%s)",cellphone,password,referrer,agentcode)
-    print('---------->register:' , sql_str)
     local errcode,res = getdb().req.docall(sql_str)
     
     if errcode ~= errs.code.SUCCESS then
@@ -94,6 +93,11 @@ end
 --获取 count 个空闲机器人
 playermgr.getidelrobot = function(count)
 
+end
+
+--匹配游戏
+playermgr.applyjoinroom = function(applyinfo)
+    
 end
 
 return playermgr

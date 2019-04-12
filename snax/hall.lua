@@ -91,7 +91,17 @@ end
 
 --加入游戏
 function REQUEST.joinroom(uid,args)
+    print('==========>[hall] joinroom')
+    for k,v in pairs(args) do
+        print(k,v)
+    end
 
+    local applyinfo = { userid = uid, gameid = args.gameid, roomid = args.roomid }
+
+    local res = playermanager.applyjoinroom(applyinfo)
+
+
+    return { errcode = errs.code.SUCCESS }
 end
 
 --test

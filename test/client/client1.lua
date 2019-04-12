@@ -167,8 +167,10 @@ end
 
 send_request('roomlist',{gameid=200})
 res = receive_data()
+local rooms = res.rooms
 print('[roomlist]:')
 for k,v in pairs(res.rooms) do
+    print('===?room:',v)
     if type(v) == 'table' then
         for _k,_v in pairs(v) do
             print(_k,_v)
@@ -215,3 +217,10 @@ send_request("loadrobot")
 res = receive_data()
 print('[loadrobot] errcode:', res.errcode)
 
+t = { gameid = rooms[1].gameid, roomid = rooms[1].id}
+print('---------->:', cjson.encode(t))
+send_request('joinroom', t)
+res = receive_data()
+print('[joinroom] errcode:', res.errcode)
+
+os.execute('sleep 3')

@@ -1,5 +1,5 @@
-skynet = require "skynet"
-snax = require "skynet.snax"
+local skynet = require "skynet"
+local snax = require "skynet.snax"
 
 skynet.start(function()
     skynet.error("start main......")
@@ -9,6 +9,8 @@ skynet.start(function()
 
     snax.uniqueservice('handshake')
     snax.uniqueservice('hall')
+
+    snax.uniqueservice('gameservicemgr')
 
     local gate = skynet.uniqueservice("gated")
 

@@ -19,7 +19,8 @@ gamelist 1 {
 }
 
 .room {
-    roomid 1 : integer
+    id 0 : integer
+    gameid 1 : integer
     name 2 : string
     gamemode 3 : integer
     entry 4 : integer
