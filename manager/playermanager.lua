@@ -95,9 +95,6 @@ playermgr.getidelrobot = function(count)
 
 end
 
---匹配游戏
-playermgr.applyjoinroom = function(applyinfo)
-    
-end
+
 
 return playermgr

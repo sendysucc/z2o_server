@@ -9,6 +9,7 @@ local gamemanager = require "gamemanager"
 local sp_host
 local sp_request
 local REQUEST = {}
+local applyqueue = {}
 
 function init(...)
     sp_host = sproto.new( utils.loadproto("./proto/hall_c2s.sp") ):host "package"
@@ -34,6 +35,10 @@ end
 function response.disconnect(id)
     skynet.error('[hall] client disconnected ... id:', id)
     playermanager.offline(id)
+end
+
+function accept.replayjoinroom(uid,matchinfo)
+
 end
 
 --游戏列表
@@ -91,15 +96,27 @@ end
 
 --加入游戏
 function REQUEST.joinroom(uid,args)
-    print('==========>[hall] joinroom')
-    for k,v in pairs(args) do
-        print(k,v)
+    local apply_gameid = args.gameid
+    local apply_roomid = args.roomid
+
+    if not apply_gameid or not apply_roomid then
+        return { errcode = errs.code.INVALID_REQUEST_PARAMS }
     end
 
-    local applyinfo = { userid = uid, gameid = args.gameid, roomid = args.roomid }
+    --不能发起多次加入游戏请求
+    assert(applyqueue[uid] == nil)
+    if applyqueue[uid] ~= nil then
+        return { errcode = errs.code.CANT_JOIN_MULTITY_ROOM }
+    end
 
-    local res = playermanager.applyjoinroom(applyinfo)
-
+    local res = gamemanager.applyjoinroom(uid, apply_gameid, apply_roomid)
+    if res ~= errs.code.SUCCESS then
+        return { errcode = res }
+    end
+    
+    applyqueue[uid] = {}
+    applyqueue[uid].co = coroutine.running()
+    skynet.wait()
 
     return { errcode = errs.code.SUCCESS }
 end

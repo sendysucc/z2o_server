@@ -11,6 +11,7 @@ skynet.start(function()
     snax.uniqueservice('hall')
 
     snax.uniqueservice('gameservicemgr')
+    snax.uniqueservice('queue')
 
     local gate = skynet.uniqueservice("gated")
 

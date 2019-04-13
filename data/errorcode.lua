@@ -17,6 +17,10 @@ set.code = {
     ALREADY_LOGIN = 13,
     PLATFOMR_MAINTENANCE = 14,
     GAME_MAINTENANCE = 15,
+    ROOM_MAINTENANCE = 16,
+    INVALID_REQUEST_PARAMS = 17,
+    CANT_JOIN_MULTITY_ROOM = 18,
+
 }
 
 set.reason = {
@@ -35,7 +39,10 @@ set.reason = {
     [set.code.PASSWORD_INCORRECT] = '密码错误',
     [set.code.ALREADY_LOGIN] = '账号已经登陆',
     [set.code.PLATFOMR_MAINTENANCE] = '平台正在维护中,请稍后再来!',
-    [set.code.GAME_MAINTENANCE] = '游戏正在维护中...'
+    [set.code.GAME_MAINTENANCE] = '游戏正在维护中...',
+    [set.code.ROOM_MAINTENANCE] = '房间维护中...',
+    [set.code.INVALID_REQUEST_PARAMS] = '无效的请求参数',
+    [set.code.CANT_JOIN_MULTITY_ROOM] = '不能同时加入多个游戏',
 }
 
 

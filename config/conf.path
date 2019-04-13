@@ -9,10 +9,14 @@ cpath = root_skynet .. "cservice/?.so"
 
 mgrlib = root_server .. 'manager/?.lua;'
 
-lua_path = root_skynet .. 'lualib/?.lua;' .. root_skynet .. 'lualib/?/init.lua;' .. root_server .. 'utils/?.lua;' .. root_server .. 'libs/?.lua;' .. root_server .. 'data/?.lua;' .. mgrlib
+gamelib = root_server .. 'games/brnn/?.lua;'
+
+lua_path = root_skynet .. 'lualib/?.lua;' .. root_skynet .. 'lualib/?/init.lua;' .. root_server .. 'utils/?.lua;' .. root_server .. 'libs/?.lua;' .. root_server .. 'data/?.lua;' .. mgrlib .. gamelib
 
 server_service = root_server .. 'service/?.lua;'
 
 luaservice = root_skynet .. 'service/?.lua;' .. server_service
 
-snax = root_server .. 'snax/?.lua;'
+gamepath = root_server .. 'games/?/?.lua;'
+
+snax = root_server .. 'snax/?.lua;' .. gamepath
