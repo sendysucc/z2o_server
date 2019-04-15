@@ -37,7 +37,7 @@ function response.disconnect(id)
     playermanager.offline(id)
 end
 
-function accept.replayjoinroom(uid,matchinfo)
+function accept.replyjoinroom(uid,matchinfo)
 
 end
 
