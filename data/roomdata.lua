@@ -48,7 +48,7 @@ local RoomData = {
             [2] = { min=500,max=1000,weight=25 }, 
             [3] = { min=1000,max=3000,weight=5 } 
         } ,
-        sNum = 4,
+        sNum = 1,
     },
     [20003] = {
         id = 20003,
@@ -72,7 +72,7 @@ local RoomData = {
             [2] = { min=500,max=1000,weight=25 }, 
             [3] = { min=1000,max=3000,weight=5 } 
         } ,
-        sNum = 4,
+        sNum = 1,
     },
     
 }

@@ -13,11 +13,14 @@ local function matching()
     skynet.error(' mathcing ....')
 
     for rid, roomqueue in pairs(applylist) do
+        if #roomqueue > 0 then
+        
+            local gameid = roomdata[rid].gameid
+            local gameinfo = gamedata[gameid]
+            
 
-        local gameid = roomdata[rid].gameid
-        local gameinfo = gamedata[gameid]
 
-
+        end
     end
 end
 
@@ -35,7 +38,7 @@ end
 
 function accept.applyjoinroom(userid,gameid,roomid)
     local playerlist = applylist[roomid] or {}
-    for uid in playerlist do
+    for _,uid in pairs(playerlist) do
         if uid == userid then
             --inform to hall service, return failed to match game
             snax.queryservice('hall').post.replayjoinroom(userid,{ errcode = errs.code.CANT_JOIN_MULTITY_ROOM })
