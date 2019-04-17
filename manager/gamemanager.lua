@@ -36,13 +36,21 @@ end
 
 --匹配游戏
 gamemgr.applyjoinroom = function(userid, gameid,roomid)
-    --check game or room weather in maintenance
+    --check game or room whether in maintenance
     if gamedata[gameid] == nil or gamedata[gameid].status ~= 1 then
         return errs.code.GAME_MAINTENANCE
     end
 
     if roomdata[roomid] == nil or roomdata[roomid].status ~= 1 then
         return errs.code.ROOM_MAINTENANCE
+    end
+
+    --check gold whether enought
+    local player = "Player:" .. userid
+    local gold = utils.getRedis().req.getValue(player , "gold") or 0
+    gold = tonumber(gold)
+    if gold < roomdata[roomid].entry then
+        return errs.code.DONT_HAVE_ENOUGHT_GOLD
     end
 
     local queue = snax.queryservice('queue')

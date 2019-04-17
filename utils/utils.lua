@@ -1,8 +1,13 @@
 local parser = require "sprotoparser"
 local core = require "sproto.core"
 local crypt = require "skynet.crypt"
+local skynet = require "skynet"
+local snax = require "skynet.snax"
 
 local utils = {}
+
+utils.redis = nil
+utils.db = nil
 
 utils.loadproto = function(protofile)
     local f = assert(io.open(protofile))
@@ -23,6 +28,20 @@ utils.tlength = function(dest)
         length = length + 1
     end
     return length
+end
+
+utils.getRedis = function()
+    if not utils.redis then
+        utils.redis = snax.queryservice('redis')
+    end
+    return utils.redis
+end
+
+utils.getDb = function()
+    if not utils.db then
+        utils.db = snax.queryservice('db')
+    end
+    return utils.db
 end
 
 return utils

@@ -20,6 +20,7 @@ set.code = {
     ROOM_MAINTENANCE = 16,
     INVALID_REQUEST_PARAMS = 17,
     CANT_JOIN_MULTITY_ROOM = 18,
+    DONT_HAVE_ENOUGHT_GOLD = 19,
 
 }
 
@@ -43,6 +44,7 @@ set.reason = {
     [set.code.ROOM_MAINTENANCE] = '房间维护中...',
     [set.code.INVALID_REQUEST_PARAMS] = '无效的请求参数',
     [set.code.CANT_JOIN_MULTITY_ROOM] = '不能同时加入多个游戏',
+    [set.code.DONT_HAVE_ENOUGHT_GOLD] = '金币不足',
 }
 
 

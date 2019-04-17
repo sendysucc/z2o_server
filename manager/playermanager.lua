@@ -19,12 +19,6 @@ local function getdb()
     return db
 end
 
-local function getredis()
-    if not rediscache then
-        rediscache = snax.queryservice('redis')
-    end
-    return rediscache
-end
 
 --注册
 playermgr.register = function(params)
@@ -34,7 +28,7 @@ playermgr.register = function(params)
     local agentcode = escape(params.agentcode or '')
 
     local sql_str = string.format("call proc_register(%s,%s,%s,%s)",cellphone,password,referrer,agentcode)
-    local errcode,res = getdb().req.docall(sql_str)
+    local errcode,res = utils.getDb().req.docall(sql_str)
     
     if errcode ~= errs.code.SUCCESS then
         return { errcode = errcode }
@@ -49,7 +43,7 @@ playermgr.login = function(params)
     local errcode = errs.code.SUCCESS
     local res = nil
     --login from redis first
-    res = getredis().req.getRecordByField("Player:*","cellphone",string.sub(cellphone,2,12))
+    res = utils.getRedis().req.getRecordByField("Player:*","cellphone",string.sub(cellphone,2,12))
     if res then
         if res.online == '1' then
             return { errcode = errs.code.ALREADY_LOGIN }
@@ -57,35 +51,35 @@ playermgr.login = function(params)
 
         local userid = res.userid
         -- set online flag
-        getredis().post.updateValue("Player:" .. userid, {online = 1})
+        utils.getRedis().post.updateValue("Player:" .. userid, {online = 1})
     else
         local sql_str = string.format("call proc_login(%s,%s)",cellphone,password)
-        errcode ,res = getdb().req.docall(sql_str)
+        errcode ,res = utils.getDb().req.docall(sql_str)
         if errcode ~= errs.code.SUCCESS then
             return {errcode = errcode}
         end
         res.online = 1
-        getredis().post.addNewRecord("Player:" .. res.userid, res)
+        utils.getRedis().post.addNewRecord("Player:" .. res.userid, res)
     end
     return res
 end
 
 --下线
 playermgr.offline = function(userid)
-    getredis().post.updateValue("Player:" .. userid, {online = 0})
+    utils.getRedis().post.updateValue("Player:" .. userid, {online = 0})
 end
 
 --加载机器人到redis
 playermgr.loadrobot2redis = function()
     local sql_str = string.format('select * from User where User.isrobot = 1;')
-    local errcode, res = getdb().req.doquery(sql_str)
+    local errcode, res = utils.getDb().req.doquery(sql_str)
 
     for _,robot in pairs(res) do
         local robotid = robot.userid
-        local alreadyExists = getredis().req.getRecordByKey("Player:" .. robotid)
+        local alreadyExists = utils.getRedis().req.getRecordByKey("Player:" .. robotid)
         if utils.tlength(alreadyExists) == 0 then
             robot.isbuzy = 0
-            getredis().post.addNewRecord("Player:" .. robotid, robot)
+            utils.getRedis().post.addNewRecord("Player:" .. robotid, robot)
         end
     end
 end

@@ -87,3 +87,7 @@ end
 function accept.removeRecord(key)
     db:del(key)
 end
+
+function response.getValue(key,field)
+    return db:hget(key,field)
+end
