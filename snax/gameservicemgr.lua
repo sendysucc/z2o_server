@@ -4,6 +4,7 @@ local utils = require "utils"
 local playermanager = require "playermanager"
 local gamedata = require "gamedata"
 local roomdata = require "roomdata"
+local errs = require "errorcode"
 
 local gameservices = {}
 
@@ -76,7 +77,6 @@ function accept.increaseonline(gameid,roomid,handle,count)
                 skynet.error('gameservice : ' .. service.obj.handle .. ", online increase: " .. count .. ", onlines is ：" .. service.onlines)
                 break
             end
-
         end
     end
 end

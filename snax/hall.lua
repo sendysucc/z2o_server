@@ -38,7 +38,23 @@ function response.disconnect(id)
 end
 
 function accept.replyjoinroom(uid,matchinfo)
+    if applyqueue[uid] then
+        applyqueue[uid].result = matchinfo
 
+        
+        if matchinfo.uidlist then   --对战游戏
+            --fill user information
+
+
+        else    --百人游戏或者单人游戏
+
+
+        end
+
+        
+
+        skynet.wakeup(applyqueue[uid].co)
+    end
 end
 
 --游戏列表
@@ -118,7 +134,9 @@ function REQUEST.joinroom(uid,args)
     applyqueue[uid].co = coroutine.running()
     skynet.wait()
 
-    return { errcode = errs.code.SUCCESS }
+    local result = applyqueue[uid].result
+    applyqueue[uid] = nil
+    return result
 end
 
 --test

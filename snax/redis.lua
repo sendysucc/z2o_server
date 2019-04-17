@@ -18,7 +18,15 @@ end
 local function convert2table(origintuple)
     local newT = {}
     for i = 1, #origintuple/2 do
-        newT[origintuple[i*2 -1]] = origintuple[i*2]
+
+        local _key = origintuple[i*2 -1]
+        local _value = origintuple[i*2]
+
+        if _key ~= 'cellphone' and _key ~= 'username' and tonumber(_value) then
+            newT[_key] = tonumber(_value)
+        else
+            newT[_key] = _value
+        end
     end
     return newT
 end

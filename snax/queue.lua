@@ -5,7 +5,6 @@ local playermanager = require "playermanager"
 local gamedata = require "gamedata"
 local roomdata = require "roomdata"
 
-
 local applylist = {}
 local gservicemgr = nil
 
@@ -14,7 +13,6 @@ local function reply(userid,result)
 end
 
 local function matching()
-
     local st_t = skynet.now()
 
     for rid, roomqueue in pairs(applylist) do
@@ -40,21 +38,22 @@ local function matching()
                 while remain > 0 do
                     local uid = table.remove(roomqueue)
 
-                    skynet.error('-----> remain left position: ' .. remain .. ' ; alloc player :' .. uid)
-
                     if uid then
+                        skynet.error('-----> remain left position: ' .. remain .. ' ; alloc player :' .. uid)
+
                         reply(uid,{ errcode = errs.code.SUCCESS, handle = srvinfo.obj.handle, gametype = srvinfo.obj.type })
                         gservicemgr.post.increaseonline(gameid,rid,srvinfo.obj.handle)
 
                         remain = remain - 1
                     else
                         break
-                    end
+                    end 
                 end
             elseif gameinfo.maxplayer == 1 then -- 单人游戏
                 local uid = table.remove(roomqueue)
                 if uid then
                     reply(uid, { errcode = errs.code.SUCCESS, handle = srvinfo.obj.handle, gametype = srvinfo.obj.type })
+
                     gameservicemgr.post.increaseonline(gameid,rid,srvinfo.obj.handle)
                 end
             else --对战游戏
@@ -63,17 +62,29 @@ local function matching()
 
                 while playernum > 0 do
                     local uid = table.remove(roomqueue)
-
                     if uid then --real player
-
+                        table.insert(userlist,uid)
+                        
+                        playernum = playernum - 1
                     else    --add robot
-
+                        local robots = playermanager.getidelrobot(playernum)
+                        for _,robid in pairs(robots) do
+                            table.insert(userlist,robid)
+                        end
+                        
+                        playernum = 0
                     end
                 end
+
+                for _, uid in pairs(userlist) do
+                    reply(uid,{ errcode = errs.code.SUCCESS, handle = srvinfo.obj.handle, gametype = srvinfo.obj.type , uidlist = userlist })
+                end
+
+                gameservicemgr.post.increaseonline(gameid,rid,srvinfo.obj.handle,#userlist)
             end
         end
     end
-    skynet.error(' round  mathcing spend time : ' .. (skynet.now() - st_t)  ) 
+    skynet.error(' round mathcing spend time : ' .. (skynet.now() - st_t)  ) 
 end
 
 function init(...)
@@ -87,7 +98,6 @@ function init(...)
     end)
     gservicemgr = snax.queryservice('gameservicemgr')
 end
-
 
 function accept.applyjoinroom(userid,gameid,roomid)
     local playerlist = applylist[roomid] or {}

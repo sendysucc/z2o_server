@@ -84,17 +84,22 @@ playermgr.loadrobot2redis = function()
         local robotid = robot.userid
         local alreadyExists = getredis().req.getRecordByKey("Player:" .. robotid)
         if utils.tlength(alreadyExists) == 0 then
+            robot.isbuzy = 0
             getredis().post.addNewRecord("Player:" .. robotid, robot)
         end
     end
-
 end
 
 --获取 count 个空闲机器人
 playermgr.getidelrobot = function(count)
+    count = count or 1
 
 end
 
 
+--设置玩家游戏状态
+playermgr.setplayinggame = function(uid,handle,gametype)
+    
+end
 
 return playermgr
