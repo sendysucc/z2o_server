@@ -40,19 +40,6 @@ end
 function accept.replyjoinroom(uid,matchinfo)
     if applyqueue[uid] then
         applyqueue[uid].result = matchinfo
-
-        
-        if matchinfo.uidlist then   --对战游戏
-            --fill user information
-
-
-        else    --百人游戏或者单人游戏
-
-
-        end
-
-        
-
         skynet.wakeup(applyqueue[uid].co)
     end
 end
@@ -105,7 +92,7 @@ function REQUEST.logout(uid,args)
     local addr = skynet.queryservice('gated')
     local auth_handle,auth_type = snax.queryservice('handshake').req.getauth()
     print('----------->logout :',uid,'gated addr:',addr)
-    skynet.send(addr,'lua','forward',-1,auth_handle,auth_type,uid)
+    skynet.send(addr,'lua','forward',uid,auth_handle,auth_type)
 
     return { errcode = errs.code.SUCCESS }
 end

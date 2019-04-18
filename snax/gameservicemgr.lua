@@ -11,7 +11,7 @@ local gameservices = {}
 function init(...)
     --创建所有百人类房间
     for rid, roomitem in pairs(roomdata) do
-        if roomitem.gamemode == 1 and (roomitem.sNum or 0) > 1  then    --创建百人类游戏
+        if roomitem.gamemode == 1 and (roomitem.sNum or 0) >= 1  then    --创建百人类游戏
             local gid = roomitem.gameid
 
             gameservices[gid] = gameservices[gid] or {}
@@ -19,7 +19,7 @@ function init(...)
             
             local serviceNum = roomitem.sNum
             while serviceNum > 0 do
-                local gobj = snax.newservice(roomitem.gametype,rid)
+                local gobj = snax.newservice(roomitem.gametype,gid,rid)
                 local t = {}
                 t.obj = gobj
                 t.onlines = 0

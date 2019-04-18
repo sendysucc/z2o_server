@@ -84,16 +84,25 @@ playermgr.loadrobot2redis = function()
     end
 end
 
---获取 count 个空闲机器人
+--[[获取 count 个空闲机器人, 
+    这个函数只能以同步的方式在 queue 服务中调用， 否则会出现同步问题，导致一个机器人在同时在多个游戏中.
+]]
 playermgr.getidelrobot = function(count)
     count = count or 1
-
+    local robset = utils.getRedis().req.getIdleRobot(count)
+    return robset
 end
 
 
 --设置玩家游戏状态
 playermgr.setplayinggame = function(uid,handle,gametype)
-    
+    utils.getRedis().post.updateValue( "Player:" .. uid, { handle = handle, gametype = gametype } )
+end
+
+
+playermgr.getPlayerById = function(uid)
+    local player = utils.getRedis().req.getRecordByKey("Player:" .. uid)
+    return player
 end
 
 return playermgr

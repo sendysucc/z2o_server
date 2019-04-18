@@ -68,8 +68,30 @@ function response.getRecordByField(classfy,field ,fieldvalue)
     return nil
 end
 
+function response.getIdleRobot(count)
+    count = count or 1
+    local set = {}
+    local keys = db:keys("Player:*")
+
+    local idx = 0
+
+    for _,key in pairs(keys) do
+        local record = convert2table(db:hgetall(key))
+        if record[field] == value and record.isrobot == 1 then
+            table.insert(set,record)
+            idx = idx + 1
+        end
+        if idx >= count then
+            break
+        end
+    end
+    return set
+end
+
 function accept.updateValue(key,keyvalues)
+    print('----------->updateValue')
     for k,v in pairs(keyvalues) do
+        print('--->',k,v)
         db:hset(key,k,v)
     end
 end

@@ -12,6 +12,11 @@ local function reply(userid,result)
     snax.queryservice('hall').post.replyjoinroom(userid,result)
 end
 
+local function addPlayer2Service(serviceobj,userinfo)
+    snax.bind(serviceobj.handle,serviceobj.type).post.addPlayer(userinfo)
+    -- serviceobj.post.addPlayer(userinfo)
+end
+
 local function matching()
     local st_t = skynet.now()
 
@@ -40,11 +45,13 @@ local function matching()
 
                     if uid then
                         skynet.error('-----> remain left position: ' .. remain .. ' ; alloc player :' .. uid)
-
                         reply(uid,{ errcode = errs.code.SUCCESS, handle = srvinfo.obj.handle, gametype = srvinfo.obj.type })
                         gservicemgr.post.increaseonline(gameid,rid,srvinfo.obj.handle)
-
                         remain = remain - 1
+
+                        --add user to game service
+                        local userinfo = playermanager.getPlayerById(uid)
+                        addPlayer2Service(srvinfo.obj,userinfo)
                     else
                         break
                     end 
@@ -53,8 +60,11 @@ local function matching()
                 local uid = table.remove(roomqueue)
                 if uid then
                     reply(uid, { errcode = errs.code.SUCCESS, handle = srvinfo.obj.handle, gametype = srvinfo.obj.type })
-
                     gameservicemgr.post.increaseonline(gameid,rid,srvinfo.obj.handle)
+
+                    --add user to game service
+                    local userinfo = playermanager.getPlayerById(uid)
+                    addPlayer2Service(srvinfo.obj,userinfo)
                 end
             else --对战游戏
                 local playernum = math.random(gameinfo.minplayer, gameinfo.maxplayer)
@@ -63,21 +73,26 @@ local function matching()
                 while playernum > 0 do
                     local uid = table.remove(roomqueue)
                     if uid then --real player
-                        table.insert(userlist,uid)
-                        
-                        playernum = playernum - 1
+                        local player = playermanager.getPlayerById(uid)
+                        if player then
+                            table.insert(userlist,player)
+                            playernum = playernum - 1
+                        end
                     else    --add robot
                         local robots = playermanager.getidelrobot(playernum)
-                        for _,robid in pairs(robots) do
-                            table.insert(userlist,robid)
+                        for _,rob in pairs(robots) do
+                            table.insert(userlist,rob)
                         end
                         
                         playernum = 0
                     end
                 end
 
-                for _, uid in pairs(userlist) do
-                    reply(uid,{ errcode = errs.code.SUCCESS, handle = srvinfo.obj.handle, gametype = srvinfo.obj.type , uidlist = userlist })
+                for _, user in pairs(userlist) do
+                    reply(user.userid,{ errcode = errs.code.SUCCESS, handle = srvinfo.obj.handle, gametype = srvinfo.obj.type , uidlist = userlist })
+
+                    -- add user to game service
+                    addPlayer2Service(srvinfo.obj,user)
                 end
 
                 gameservicemgr.post.increaseonline(gameid,rid,srvinfo.obj.handle,#userlist)

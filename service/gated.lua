@@ -69,6 +69,7 @@ function handler.disconnect(fd)
         local ret = c.agent.req.disconnect(id)
     end
     connection[fd] = nil
+
     
     onlinecount = onlinecount -1
 end
@@ -91,22 +92,21 @@ function handler.command(cmd,source,...)
 end
 
 function CMD.forward(source,fd,handle,servicetype,userid)
-    local c 
-    if fd < 0 then
-        c = connection[uid_fd[userid]]
-    else
-        c = connection[fd]
-    end
-    if fd < 0 and userid then
-        c.uid = nil
-    else
-        c.uid = userid
+    local c = connection[fd]
+    if not c then
+        c = assert(connection[uid_fd[fd]])
     end
 
     c.agent = snax.bind(handle,servicetype)
-    
+
     if userid then
+        c.uid = userid
         uid_fd[userid] = fd
+    end
+
+    --清除掉註銷時留下的uid
+    if servicetype == 'auth' then
+        c.uid = nil
     end
 end
 

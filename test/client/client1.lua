@@ -224,3 +224,13 @@ res = receive_data()
 print('[joinroom] errcode:', res.errcode)
 
 os.execute('sleep 3')
+
+
+host = sproto.new( utils.loadproto("./proto/brnn_s2c.sp") ):host "package"
+request = host:attach( sproto.new(utils.loadproto("./proto/brnn_c2s.sp") ))
+
+send_request("gamestatus")
+res = receive_data()
+print('[gamestatus] errcode: ',res.errcode)
+
+os.execute('sleep 3')
