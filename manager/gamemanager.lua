@@ -50,7 +50,7 @@ gamemgr.applyjoinroom = function(userid, gameid,roomid)
     local gold = utils.getRedis().req.getValue(player , "gold") or 0
     gold = tonumber(gold)
     if gold < roomdata[roomid].entry then
-        return errs.code.DONT_HAVE_ENOUGHT_GOLD
+        return errs.code.DONT_HAVE_ENOUGH_GOLD
     end
 
     local queue = snax.queryservice('queue')
