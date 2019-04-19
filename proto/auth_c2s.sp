@@ -46,7 +46,7 @@ login 3 {
         diamond 8 : integer
         promotecode 9 : string
         accountenable 10 : boolean
-        gamingservice 11 : string
-        gaminghandle 12 : integer
+        gameid    11  : integer
+        roomid 12   : integer
     }
 }

@@ -13,6 +13,7 @@ local sp_request
 local gameid
 local roomid 
 local REQUEST = {}
+local allow_quit = false
 
 
 function init(...)
@@ -26,7 +27,6 @@ function init(...)
 
     sp_host = sproto.new( utils.loadproto("./proto/brnn_c2s.sp") ):host "package"
     sp_request = sp_host:attach(sproto.new( utils.loadproto("./proto/brnn_s2c.sp") ))
-
 end
 
 function response.message(userid,msg,sz)
@@ -48,10 +48,29 @@ end
 function response.disconnect(userid)
     skynet.error('[brnn] client disconnected .. id:', userid)
     playermanager.offline(userid)
+
+    --如果玩家参与了本局游戏，并且游戏不允许中途退出，那么将设置玩家的断线标识， 以便处理断线恢复
+    for seatno, userinfo in pairs(seats) do
+        if userinfo.userid == userid then
+            if userinfo.isAttend and not allow_quit then
+                playermanager.breaklineFlag(userid,true)
+                userinfo.breakline = true
+            end
+
+            break
+        end
+    end
 end
 
-
 function accept.addPlayer(userinfo)
+    --check whether is breakline reconnection
+    for seatno, user in pairs(seats) do
+        if user.userid == userinfo.userid then
+            user.breakline = nil
+            return 
+        end
+    end
+
     local available_pos = {}
     for i =1, gamedata[gameid].maxplayer do
         if not seats[i] then
@@ -63,15 +82,14 @@ function accept.addPlayer(userinfo)
 
     seats[pos] = userinfo
 
+    --test
+    seats[pos].isAttend = true
+
     --forward message to this game service
     local addr = skynet.queryservice('gated')
     local selfobj = snax.self()
-    print('---------------->userid:', userinfo.userid)
     skynet.send(addr,'lua','forward',userinfo.userid, selfobj.handle, selfobj.type)
-
-    playermanager.setplayinggame(userinfo.userid, selfobj.handle, selfobj.type )
-
-
+    playermanager.setplayinggame(userinfo.userid, gameid, roomid, selfobj.handle, selfobj.type )
 end
 
 --获取游戏信息
@@ -82,5 +100,11 @@ end
 
 --退出游戏
 function REQUEST.quit(userid)
+    if seats[userid].isAttend then
+        if not allow_quit then
+            return { errcode = errs.code.CANT_QUIT_PLAYING }
+        end
+    end
 
+    return { errcode = errs.code.SUCCESS }
 end

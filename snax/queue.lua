@@ -14,7 +14,6 @@ end
 
 local function addPlayer2Service(serviceobj,userinfo)
     snax.bind(serviceobj.handle,serviceobj.type).post.addPlayer(userinfo)
-    -- serviceobj.post.addPlayer(userinfo)
 end
 
 local function matching()

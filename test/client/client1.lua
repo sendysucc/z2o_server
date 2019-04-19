@@ -210,27 +210,37 @@ for k,v in pairs(res) do
     print(k,v)
 end
 
-host = sproto.new( utils.loadproto("./proto/hall_s2c.sp") ):host "package"
-request = host:attach( sproto.new(utils.loadproto("./proto/hall_c2s.sp") ))
+if res.gameid and res.roomid then
+    host = sproto.new( utils.loadproto("./proto/brnn_s2c.sp") ):host "package"
+    request = host:attach( sproto.new(utils.loadproto("./proto/brnn_c2s.sp") ))
 
-send_request("loadrobot")
-res = receive_data()
-print('[loadrobot] errcode:', res.errcode)
+    send_request("gamestatus")
+    res = receive_data()
+    print('[gamestatus] errcode: ',res.errcode)
 
-t = { gameid = rooms[1].gameid, roomid = rooms[1].id}
-print('---------->:', cjson.encode(t))
-send_request('joinroom', t)
-res = receive_data()
-print('[joinroom] errcode:', res.errcode)
+    os.execute('sleep 3')
+else
+    host = sproto.new( utils.loadproto("./proto/hall_s2c.sp") ):host "package"
+    request = host:attach( sproto.new(utils.loadproto("./proto/hall_c2s.sp") ))
 
-os.execute('sleep 3')
+    send_request("loadrobot")
+    res = receive_data()
+    print('[loadrobot] errcode:', res.errcode)
 
+    t = { gameid = rooms[1].gameid, roomid = rooms[1].id}
+    print('---------->:', cjson.encode(t))
+    send_request('joinroom', t)
+    res = receive_data()
+    print('[joinroom] errcode:', res.errcode)
 
-host = sproto.new( utils.loadproto("./proto/brnn_s2c.sp") ):host "package"
-request = host:attach( sproto.new(utils.loadproto("./proto/brnn_c2s.sp") ))
+    os.execute('sleep 3')
 
-send_request("gamestatus")
-res = receive_data()
-print('[gamestatus] errcode: ',res.errcode)
+    host = sproto.new( utils.loadproto("./proto/brnn_s2c.sp") ):host "package"
+    request = host:attach( sproto.new(utils.loadproto("./proto/brnn_c2s.sp") ))
 
-os.execute('sleep 3')
+    send_request("gamestatus")
+    res = receive_data()
+    print('[gamestatus] errcode: ',res.errcode)
+
+    os.execute('sleep 3')
+end

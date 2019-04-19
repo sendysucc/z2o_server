@@ -142,10 +142,17 @@ function REQUEST.login(fd,args)
     end
 
     if tonumber(rets.errcode) == errs.code.SUCCESS then
-        --forward to hall service
         local addr = skynet.queryservice("gated")
-        local hall = snax.queryservice('hall')
-        skynet.send(addr,'lua','forward', fd, hall.handle,hall.type, rets.userid)
+
+        if rets.breakline then
+            --forward to game service
+            skynet.send(addr,'lua','forward',fd,rets.handle,rets.gametype,rets.userid)
+        else
+            --forward to hall service
+            
+            local hall = snax.queryservice('hall')
+            skynet.send(addr,'lua','forward', fd, hall.handle,hall.type, rets.userid)
+        end
     end
 
     client[fd] = nil

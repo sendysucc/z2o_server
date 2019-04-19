@@ -21,6 +21,7 @@ set.code = {
     INVALID_REQUEST_PARAMS = 17,
     CANT_JOIN_MULTITY_ROOM = 18,
     DONT_HAVE_ENOUGH_GOLD = 19,
+    CANT_QUIT_PLAYING = 20,
 }
 
 set.reason = {
@@ -44,6 +45,7 @@ set.reason = {
     [set.code.INVALID_REQUEST_PARAMS] = '无效的请求参数',
     [set.code.CANT_JOIN_MULTITY_ROOM] = '不能同时加入多个游戏',
     [set.code.DONT_HAVE_ENOUGH_GOLD] = '金币不足',
+    [set.code.CANT_QUIT_PLAYING] = '游戏中不允许推出',
 }
 
 return set

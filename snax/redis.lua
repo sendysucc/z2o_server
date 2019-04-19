@@ -5,7 +5,6 @@ local errs = require "errorcode"
 
 local db
 
-
 local function convert2tuple(origintable)
     local newT = {}
     for k,v in pairs(origintable) do

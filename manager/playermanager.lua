@@ -93,16 +93,22 @@ playermgr.getidelrobot = function(count)
     return robset
 end
 
-
 --设置玩家游戏状态
-playermgr.setplayinggame = function(uid,handle,gametype)
-    utils.getRedis().post.updateValue( "Player:" .. uid, { handle = handle, gametype = gametype } )
+playermgr.setplayinggame = function(uid,gameid,roomid,handle,gametype)
+    utils.getRedis().post.updateValue( "Player:" .. uid, { gameid = gameid, roomid = roomid, handle = handle, gametype = gametype } )
 end
-
 
 playermgr.getPlayerById = function(uid)
     local player = utils.getRedis().req.getRecordByKey("Player:" .. uid)
     return player
+end
+
+playermgr.breaklineFlag = function(uid, isBreak)
+    if isBreak then
+        utils.getRedis().post.updateValue("Player:" .. uid, {breakline = 1})
+    else
+        utils.getRedis().post.delValue("Player:" .. uid, { "breakline" })
+    end
 end
 
 return playermgr
